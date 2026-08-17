@@ -18,13 +18,18 @@
             bindings = <&kp RSHFT>, <&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS>;
         };
 
-        // 2. ZMK標準の &mt 動作条件を全体設定（flavor / retro-tap の指定）
-        &mt {
-            flavor = "balanced";
-            tapping-term-ms = <200>;
-            quick-tap-ms = <200>;
-            retro-tap;
-        };
+        / {
+    // 2. ZMK標準の mt (Hold-Tap) の設定を全般上書き
+    &mt {
+        flavor = "balanced";
+        tapping-term-ms = <200>;
+        quick-tap-ms = <200>;
+        retro-tap;
+    };
+
+    behaviors {
+        // 1. tap_dance（ShiftとCapsLock、および右端のMission Control用）
+...
 
         // 3. レイヤー切り替え用 hold-tap
         mt_tab_l2: mt_tab_l2 {

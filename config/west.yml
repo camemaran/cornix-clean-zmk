@@ -1,15 +1,64 @@
-manifest:
-  remotes:
-    - name: zmkfirmware
-      url-base: "https://github.com"
-    - name: camemaran
-      url-base: "https://github.com"
-  projects:
-    - name: zmk
-      remote: zmkfirmware
-      revision: main
-    - name: zmk-keyboard-cornix
-      remote: camemaran
-      revision: main
-  self:
-    path: config
+name: Build ZMK firmware
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-zephyr-modules
+        with:
+          path: |
+            ~/.cache/zephyr
+            zephyr
+            modules
+            tools
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/west.yml') }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install west
+        run: pip install west
+
+      - name: Initialize West Workspace
+        run: |
+          west init -m https://github.com --mr main /tmp/zmk-config
+          cp -r config /tmp/zmk-config/
+          cd /tmp/zmk-config
+          west config manifest.path config
+          # 💎 ここでCornixの設計図をGitHubから力技で直接ダウンロードして合体させます
+          git clone https://github.com /tmp/zmk-config/zmk-keyboard-cornix
+
+      - name: Install West Dependencies
+        run: |
+          cd /tmp/zmk-config
+          west update
+          west zephyr-export
+
+      - name: Install Python Dependencies
+        run: |
+          pip install -r /tmp/zmk-config/zephyr/scripts/requirements.txt
+
+      - name: Build Left
+        run: |
+          west build -s /tmp/zmk-config/zmk/app -d /tmp/zmk-config/build/left -b cornix_left -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/tmp/zmk-config/zmk-keyboard-cornix
+
+      - name: Build Right
+        run: |
+          west build -s /tmp/zmk-config/zmk/app -d /tmp/zmk-config/build/right -b cornix_right -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/tmp/zmk-config/zmk-keyboard-cornix
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cornix_firmware
+          path: |
+            /tmp/zmk-config/build/left/zephyr/zmk.uf2
+            /tmp/zmk-config/build/right/zephyr/zmk.uf2

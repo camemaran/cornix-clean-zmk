@@ -32,7 +32,8 @@ jobs:
         run: |
           mkdir -p /tmp/zmk-workspace
           cd /tmp/zmk-workspace
-          west init -m https://github.com --mr v0.3.0
+          # 💎 URLを "" で囲み、WestツールによるURLの強制切断バグを100%完全に防止します
+          west init -m "https://github.com" --mr v0.3.0
           cp -r ../../user-config/config/* config/
           west update
           

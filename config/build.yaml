@@ -1,0 +1,6 @@
+# --- Cornix LP ビルドターゲット指定 ---
+include:
+  - board: cornix_left
+    snippet: studio-rpc-usb-uart
+  - board: cornix_right
+    snippet: studio-rpc-usb-uart

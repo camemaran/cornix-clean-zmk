@@ -17,7 +17,7 @@ manifest:
       remote: zmkfirmware
       revision: v0.3.0
       clone-depth: 1
-      import: app/west.yml   # 💎【ここを元のサンプルの1行完結の形に戻しました】
+      import: app/west.yml
     - name: zmk-helpers
       remote: urob
       revision: main

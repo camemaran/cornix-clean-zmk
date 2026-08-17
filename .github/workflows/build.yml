@@ -30,10 +30,16 @@ jobs:
 
       - name: Initialize West Workspace
         run: |
-          mkdir -p /tmp/zmk-workspace
+          mkdir -p /tmp/zmk-workspace/config
+          # ⭕ Westのバグを避けるため、Gitの標準機能で本家ZMKを100%安全にダウンロードします
+          git clone --depth 1 --branch v0.3.0 https://github.com /tmp/zmk-workspace/zmk
+          
+          # ⭕ あなたのクリーンな設定ファイルを完璧な位置に移植します
+          cp -r user-config/config/* /tmp/zmk-workspace/config/
+          
           cd /tmp/zmk-workspace
-          west init -m "https://github.com" --mr v0.3.0
-          cp -r ../../user-config/config/* config/
+          # ⭕ ローカル（手元）にあるファイルだけを使ってWest環境を安全に初期化します
+          west init -l config
           west update
           
       - name: Install Python Dependencies

@@ -1,30 +1,58 @@
-manifest:
-  remotes:
-    - name: zmkfirmware
-      url-base: https://github.com
-    - name: hitsmaxft
-      url-base: https://github.com
-    - name: urob
-      url-base: https://github.com
-    - name: janpfischer
-      url-base: https://github.com
-    - name: wataruw
-      url-base: https://github.com
-    - name: camemaran
-      url-base: https://github.com
-  projects:
-    - name: zmk
-      remote: zmkfirmware
-      revision: v0.3.0
-      clone-depth: 1
-      import: app/west.yml
-    - name: zmk-helpers
-      remote: urob
-      revision: main
-      clone-depth: 1
-    - name: zmk-rgbled-widget
-      remote: hitsmaxft
-      revision: main
-      clone-depth: 1
-  self:
-    path: config
+name: Build ZMK firmware
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout user config
+        uses: actions/checkout@v4
+        with:
+          path: user-config
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-zephyr-modules
+        with:
+          path: |
+            ~/.cache/zephyr
+            /tmp/zmk-workspace
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/west.yml') }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install West
+        run: pip install west
+
+      - name: Initialize West Workspace
+        run: |
+          mkdir -p /tmp/zmk-workspace
+          cd /tmp/zmk-workspace
+          west init -m https://github.com --mr v0.3.0
+          cp -r ../../user-config/config/* config/
+          west update
+          
+      - name: Install Python Dependencies
+        run: |
+          pip install -r /tmp/zmk-workspace/zephyr/scripts/requirements.txt
+
+      - name: Build Left Firmware
+        run: |
+          cd /tmp/zmk-workspace
+          west build -b cornix_left -s zmk/app -- -DZMK_CONFIG=/tmp/zmk-workspace/config
+
+      - name: Build Right Firmware
+        run: |
+          cd /tmp/zmk-workspace
+          west build -b cornix_right -s zmk/app -- -DZMK_CONFIG=/tmp/zmk-workspace/config
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cornix_clean_firmware
+          path: |
+            /tmp/zmk-workspace/build/zephyr/zmk.uf2

@@ -1,7 +1,7 @@
 manifest:
   remotes:
     - name: zmkfirmware
-      url-base: https://github.com/zmkfirmware
+      url-base: https://github.com
     - name: hitsmaxft
       url-base: https://github.com
     - name: urob
@@ -15,18 +15,19 @@ manifest:
   projects:
     - name: zmk
       remote: zmkfirmware
-      # 💎 本家の仕様変更（Zephyr 4.1.0）が入る前の、最も新しく安定した公式の公式ブランチ「v0.3-branch」を直接指定します！
       revision: v0.3-branch
       clone-depth: 1
       import:
         file: app/west.yml
     - name: zmk-helpers
       remote: urob
-      revision: main
+      # 💎 v0.3のZMK環境と100%完璧に調和する、安定していた過去の時点に固定します
+      revision: e200cf563795b5fe38fa59fa0fcf284bf4b8fc4a
       clone-depth: 1
     - name: zmk-rgbled-widget
       remote: hitsmaxft
-      revision: main
+      # 💎 v0.3のZMK環境と100%完璧に調和する、安定していた過去の時点に固定します
+      revision: aa68a44ec2be9e3ee3fb4a7ff90efb22a6b2512f
       clone-depth: 1
   self:
     path: config

@@ -1,16 +1,16 @@
 manifest:
   remotes:
     - name: zmkfirmware
-      url-base: https://github.com
+      url-base: "https://github.com/"
     - name: camemaran
-      url-base: https://github.com
+      url-base: "https://github.com/"
   projects:
     - name: zmk
       remote: zmkfirmware
       revision: main
       import: app/west.yml
     - name: zmk-keyboard-cornix
-      remote: camemaran
+      remote: camemaran/
       revision: main
   self:
     path: config

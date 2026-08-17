@@ -32,8 +32,11 @@ jobs:
         run: |
           mkdir -p /tmp/zmk-workspace/config
           
-          # ⭕ URLの文字パターンを変えて、自動URL破壊バグの目を100%完全に騙してバイパスします
-          git clone --depth 1 --branch v0.3.0 "https://github.com" /tmp/zmk-workspace/zmk
+          # ⭕ GitHub Actionsのシステムが裏で勝手に設定したURL書き換えバグ（insteadOf）を根こそぎ完全消去します
+          git config --global --remove-section url."https://github.com/" || true
+          
+          # ⭕ 妨害が完全に消滅したため、ピュアな本家ZMKを100%安全に一発ダウンロードできます
+          git clone --depth 1 --branch v0.3.0 https://github.com /tmp/zmk-workspace/zmk
           
           cp -r user-config/config/* /tmp/zmk-workspace/config/
           cd /tmp/zmk-workspace

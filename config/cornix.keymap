@@ -3,7 +3,7 @@
 #include <dt-bindings/zmk/bt.h>
 
 / {
-    // ZMK標準の mt (Hold-Tap) の設定を全体上書き
+    // 1. ZMK標準の mt の上書き（/ の直下に置く）
     &mt {
         flavor = "balanced";
         tapping-term-ms = <200>;
@@ -11,14 +11,15 @@
         retro-tap;
     };
 
+    // 2. カスタム動作の定義（behaviors ブロックの中に並べる）
     behaviors {
-        // 1. tap_dance（ShiftとCapsLock、および右端のMission Control用）
         td_shift_caps: tap_dance {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
             bindings = <&kp LSHFT>, <&kp CAPSLOCK>;
         };
+
         td_shift_mission: tap_dance_mission {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
@@ -26,7 +27,6 @@
             bindings = <&kp RSHFT>, <&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS>;
         };
 
-        // 2. レイヤー切り替え用 hold-tap
         mt_tab_l2: mt_tab_l2 {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -36,6 +36,7 @@
             quick-tap-ms = <200>;
             retro-tap;
         };
+
         mt_del_l1: mt_del_l1 {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -47,6 +48,7 @@
         };
     };
 
+    // 3. キーマップ定義
     keymap {
         compatible = "zmk,keymap";
 

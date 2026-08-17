@@ -1,1 +1,3 @@
-board: [ "cornix_left", "cornix_right" ]
+include:
+  - board: cornix_left
+  - board: cornix_right

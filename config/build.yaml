@@ -1,3 +1,2 @@
 include:
-  - board: cornix_left
-  - board: cornix_right
+- board: cornix_left    # 👈 「-」の手前に半角スペースが入っていないと空っぽ扱いになります

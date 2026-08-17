@@ -3,19 +3,20 @@ manifest:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
     - name: hitsmaxft
-      url-base: https://github.com/hitsmaxft
+      url-base: https://github.com
     - name: urob
-      url-base: https://github.com/urob
+      url-base: https://github.com
     - name: janpfischer
-      url-base: https://github.com/janpfischer
+      url-base: https://github.com
     - name: wataruw
-      url-base: https://github.com/wataruw
+      url-base: https://github.com
     - name: camemaran
-      url-base: https://github.com/camemaran
+      url-base: https://github.com
   projects:
     - name: zmk
       remote: zmkfirmware
-      revision: 40b2f0a6d0ca17019623e1ca8ea822f39874cb30
+      # 💎 本家の仕様変更（Zephyr 4.1.0）が入る前の、最も新しく安定した公式の公式ブランチ「v0.3-branch」を直接指定します！
+      revision: v0.3-branch
       clone-depth: 1
       import:
         file: app/west.yml

@@ -8,7 +8,6 @@ manifest:
     - name: zmk
       remote: zmkfirmware
       revision: main
-      path: zmk
     - name: zmk-keyboard-cornix
       remote: camemaran
       revision: main
